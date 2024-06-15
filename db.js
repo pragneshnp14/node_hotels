@@ -1,39 +1,45 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-
 // Define the MongoDB connection URL
-// const mongoURL = 'mongodb://127.0.0.1:27017/hotels'; // Use 127.0.0.1 instead of localhost
-// const mongoURL = process.env.MONGODB_URL_lOCAL
-const mongoURL = process.env.MONGODB_URL_LIVE
+const mongoURL = process.env.MONGODB_URL_LIVE;
 
-// Set up MongoDB connection
+// Set up MongoDB connection with robust options
 mongoose.connect(mongoURL, {
-    ssl: true
+  ssl: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+  retryWrites: true
 }).then(() => {
-    console.log('MongoDB connected');
-  }).catch((err) => {
-    console.error('MongoDB connection error:', err);
-  });
+  console.log('MongoDB connected');
+}).catch((err) => {
+  console.error('MongoDB connection error:', err);
+});
 
 const db = mongoose.connection;
 
 db.on('connected', () => {
-    console.log('Connected to MongoDB server');
+  console.log('Connected to MongoDB server');
 });
 
 db.on('error', (err) => {
-    console.log('MongoDB connection error:', err);
+  console.error('MongoDB connection error:', err);
 });
 
 db.on('disconnected', () => {
-    console.log('MongoDB disconnected');
-});
-
-// Attempt to reconnect when disconnected
-db.on('disconnected', () => {
-    console.log('Attempting to reconnect to MongoDB...');
-    mongoose.connect(mongoURL);
+  console.log('MongoDB disconnected. Attempting to reconnect...');
+  mongoose.connect(mongoURL, {
+    ssl: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+    retryWrites: true
+  }).catch((err) => {
+    console.error('Error during MongoDB reconnection attempt:', err);
+  });
 });
 
 module.exports = db;
