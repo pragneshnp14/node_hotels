@@ -8,7 +8,15 @@ require('dotenv').config();
 const mongoURL = process.env.MONGODB_URL_LIVE
 
 // Set up MongoDB connection
-mongoose.connect(mongoURL);
+mongoose.connect(mongoURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    ssl: true
+}).then(() => {
+    console.log('MongoDB connected');
+  }).catch((err) => {
+    console.error('MongoDB connection error:', err);
+  });
 
 const db = mongoose.connection;
 
