@@ -4,11 +4,9 @@ require('dotenv').config();
 // Define the MongoDB connection URL
 const mongoURL = process.env.MONGODB_URL_LIVE;
 
-// Set up MongoDB connection with robust options
+// Set up MongoDB connection with updated options
 mongoose.connect(mongoURL, {
-  ssl: true,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+  tls: true, // Enforce TLS/SSL connection
   serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
   socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
   retryWrites: true
@@ -31,9 +29,7 @@ db.on('error', (err) => {
 db.on('disconnected', () => {
   console.log('MongoDB disconnected. Attempting to reconnect...');
   mongoose.connect(mongoURL, {
-    ssl: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    tls: true, // Enforce TLS/SSL connection
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,
     retryWrites: true
