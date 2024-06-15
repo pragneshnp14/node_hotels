@@ -9,8 +9,6 @@ const mongoURL = process.env.MONGODB_URL_LIVE
 
 // Set up MongoDB connection
 mongoose.connect(mongoURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     ssl: true
 }).then(() => {
     console.log('MongoDB connected');
