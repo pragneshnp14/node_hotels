@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+// Debug logging
+mongoose.set('debug', true);
+
+// Log the MongoDB URL to ensure it's loaded correctly
+console.log('MongoDB URL:', process.env.MONGODB_URL_LIVE);
+
 // Define the MongoDB connection URL
 const mongoURL = process.env.MONGODB_URL_LIVE;
 
@@ -9,7 +15,8 @@ mongoose.connect(mongoURL, {
   tls: true, // Enforce TLS/SSL connection
   serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
   socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
-  retryWrites: true
+  retryWrites: true,
+  tlsAllowInvalidCertificates: true,
 }).then(() => {
   console.log('MongoDB connected');
 }).catch((err) => {
@@ -32,7 +39,9 @@ db.on('disconnected', () => {
     tls: true, // Enforce TLS/SSL connection
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,
-    retryWrites: true
+    retryWrites: true,
+    tlsAllowInvalidCertificates: true, // Only for testing, should be false in production
+    tlsInsecure: true // Only for testing, should be false in production
   }).catch((err) => {
     console.error('Error during MongoDB reconnection attempt:', err);
   });
