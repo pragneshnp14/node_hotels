@@ -16,7 +16,7 @@ mongoose.connect(mongoURL, {
   serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
   socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
   retryWrites: true,
-  tlsAllowInvalidCertificates: true,
+  tlsAllowInvalidCertificates: true, // Only for testing, should be false in production
 }).then(() => {
   console.log('MongoDB connected');
 }).catch((err) => {
@@ -41,7 +41,6 @@ db.on('disconnected', () => {
     socketTimeoutMS: 45000,
     retryWrites: true,
     tlsAllowInvalidCertificates: true, // Only for testing, should be false in production
-    tlsInsecure: true // Only for testing, should be false in production
   }).catch((err) => {
     console.error('Error during MongoDB reconnection attempt:', err);
   });
