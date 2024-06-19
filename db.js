@@ -13,6 +13,8 @@ const mongoURL = process.env.NODE_ENV === 'production' ? process.env.MONGODB_URL
 
 // Set up MongoDB connection with options
 mongoose.connect(mongoURL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
   // Other options like tls and retryWrites if needed
 }).then(() => {
   console.log('MongoDB connected');
