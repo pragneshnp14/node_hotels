@@ -1,20 +1,24 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-mongoose.set('debug', true); // Enable Mongoose debugging
+// Debug logging
+mongoose.set('debug', true);
 
-const mongoURL = process.env.MONGODB_URL_LIVE;
+// Log MongoDB URLs
+console.log('Local MongoDB URL:', process.env.MONGODB_URL_LOCAL);
+console.log('Live MongoDB URL:', process.env.MONGODB_URL_LIVE);
 
-const options = {
-  tls: true,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-  retryWrites: true
-};
+// Select the appropriate MongoDB URL based on the environment
+const mongoURL = process.env.NODE_ENV === 'production' ? process.env.MONGODB_URL_LIVE : process.env.MONGODB_URL_LOCAL;
 
-mongoose.connect(mongoURL, options)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// Set up MongoDB connection with options
+mongoose.connect(mongoURL, {
+  // Other options like tls and retryWrites if needed
+}).then(() => {
+  console.log('MongoDB connected');
+}).catch((err) => {
+  console.error('MongoDB connection error:', err);
+});
 
 const db = mongoose.connection;
 
@@ -28,7 +32,11 @@ db.on('error', (err) => {
 
 db.on('disconnected', () => {
   console.log('MongoDB disconnected. Attempting to reconnect...');
-  mongoose.connect(mongoURL, options).catch(err => {
+  mongoose.connect(mongoURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    // Other options like tls and retryWrites if needed
+  }).catch((err) => {
     console.error('Error during MongoDB reconnection attempt:', err);
   });
 });
