@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-console.log('Local MongoDB URL:', process.env.MONGODB_URL_LOCAL);
-console.log('Live MongoDB URL:', process.env.MONGODB_URL_LIVE);
+// console.log('Local MongoDB URL:', process.env.MONGODB_URL_LOCAL);
+// console.log('Live MongoDB URL:', process.env.MONGODB_URL_LIVE);
 
 // Select the appropriate MongoDB URL based on the environment
 const mongoURL = process.env.NODE_ENV === 'production' ? process.env.MONGODB_URL_LIVE : process.env.MONGODB_URL_LOCAL;
